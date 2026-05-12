@@ -13,16 +13,6 @@ logs/
 *.pid
 
 ############################################
-# BlueJ
-############################################
-*.ctxt
-
-############################################
-# Mobile Tools for Java (J2ME)
-############################################
-.mtj.tmp/
-
-############################################
 # Pacotes gerados
 ############################################
 *.jar
@@ -44,15 +34,6 @@ pom.xml.next
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-
-############################################
-# IntelliJ IDEA
-############################################
-.idea/
-*.iml
-*.iws
-*.ipr
-out/
 
 ############################################
 # Eclipse
@@ -78,32 +59,5 @@ out/
 .history/
 *.code-workspace
 
-############################################
-# Gradle (caso exista no ambiente)
-############################################
-.gradle/
-build/
 
-############################################
-# Testes e cobertura
-############################################
-coverage/
-jacoco.exec
-jacoco/
 
-############################################
-# Sistema Operacional
-############################################
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Linux
-*~
-``
