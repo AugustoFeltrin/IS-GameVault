@@ -13,20 +13,6 @@ Com uma interface moderna e intuitiva, o sistema busca transformar o acompanhame
 - **Estatísticas de Perfil**: Visualize horas jogadas, média de notas e quantidade de títulos zerados.
 - **Busca e Exploração**: Encontre jogos por nome, gênero, plataforma e popularidade via API.
 
-## 🛠️ Tecnologias Utilizadas
-
-### Frontend
-- **React** & **Next.js**
-- **TailwindCSS** (Estilização)
-
-### Backend
-- **Node.js** & **Express**
-- **JWT** & **bcrypt** (Segurança e Autenticação)
-
-### Banco de Dados
-- **PostgreSQL**
-- **Prisma ORM**
-
 ## 👥 Equipe de Desenvolvimento
 
 - 👨‍💻 **Augusto R. Feltrin** [@AugustoFeltrin](https://github.com/AugustoFeltrin)
