@@ -16,7 +16,6 @@ import br.edu.gamevault.util.DatabaseConnectionPostgreSQL;
 
 public class GameVaultRepositoryPostgres implements GameVaultRepository {
     // User
-
     @Override
     public User addUser(User user) {
         String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
@@ -63,7 +62,6 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
     }
 
     // Game
-
     @Override
     public Game addGame(Game game) {
         String sql = "INSERT INTO games (title, description, cover_url, igdb_id) VALUES (?, ?, ?, ?)";
@@ -135,7 +133,6 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
     }
 
     // Review
-
     @Override
     public Review addReview(Review review) {
         String sql = "INSERT INTO reviews (user_id, game_id, rating, comment, review_date) VALUES (?, ?, ?, ?, ?)";
@@ -145,11 +142,9 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
             pstmt.setInt(1, review.userId());
             pstmt.setInt(2, review.gameId());
             
-            // Tratamento dinâmico para campos que aceitam NULL no banco
             pstmt.setObject(3, review.rating(), Types.INTEGER); 
             pstmt.setString(4, review.comment());
             
-            // Convertendo LocalDate do Java para Date do SQL
             pstmt.setDate(5, Date.valueOf(review.reviewDate()));
             
             pstmt.executeUpdate();
@@ -210,13 +205,11 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
         return reviews;
     }
 
-    // Método auxiliar para evitar repetição de código ao ler do banco
     private Review mapRowToReview(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         int userId = rs.getInt("user_id");
         int gameId = rs.getInt("game_id");
         
-        // Evita que o Java converta um NULL do banco no primitivo '0'
         double rating = rs.getObject("rating", Integer.class); 
         String comment = rs.getString("comment");
         LocalDate reviewDate = rs.getDate("review_date").toLocalDate();
