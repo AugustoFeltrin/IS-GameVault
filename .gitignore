@@ -61,5 +61,9 @@ buildNumber.properties
 .history/
 *.code-workspace
 
+############################################
+# Outros
+############################################
 
+.env
 
