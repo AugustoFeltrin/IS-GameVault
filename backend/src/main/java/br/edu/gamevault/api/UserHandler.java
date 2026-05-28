@@ -1,10 +1,7 @@
 package br.edu.gamevault.api;
-
 import br.edu.gamevault.service.UserService;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
