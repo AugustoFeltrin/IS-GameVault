@@ -11,9 +11,9 @@ export default function NavBar() {
                 </div>
 
                 <nav className="flex items-center gap-8">
-                    <Link to="/" className="text-sm text-gray-300 hover:text-primary">Início</Link>
+                    <Link to="/home" className="text-sm text-gray-300 hover:text-primary">Início</Link>
                     <Link to="/" className="text-sm text-gray-300 hover:text-primary">Descobrir</Link>
-                    <Link to="/" className="text-sm text-gray-300 hover:text-primary">Meu Diário</Link>
+                    <Link to="/profile" className="text-sm text-gray-300 hover:text-primary">Meu Diário</Link>
                 </nav>
 
                 <div className="flex gap-4 items-center">
