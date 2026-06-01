@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 export default function NavBar() {
     return (
         <header className="h-full w-full bg-background/80 backdrop-blur-md border-b border-surface">
@@ -8,11 +10,11 @@ export default function NavBar() {
                     <span>GameVault</span>
                 </div>
 
-                <ul className="flex items-center gap-8">
-                    <li><a href="/" className="text-sm text-gray-300 hover:text-primary">Início</a></li>
-                    <li><a href="/" className="text-sm text-gray-300 hover:text-primary">Descobrir</a></li>
-                    <li><a href="/" className="text-sm text-gray-300 hover:text-primary">Meu Diário</a></li>
-                </ul>
+                <nav className="flex items-center gap-8">
+                    <Link to="/home" className="text-sm text-gray-300 hover:text-primary">Início</Link>
+                    <Link to="/" className="text-sm text-gray-300 hover:text-primary">Descobrir</Link>
+                    <Link to="/profile" className="text-sm text-gray-300 hover:text-primary">Meu Diário</Link>
+                </nav>
 
                 <div className="flex gap-4 items-center">
                     <div className="flex items-center bg-surface rounded-full h-10 border border-transparent focus-within:border-primary transition-all">
