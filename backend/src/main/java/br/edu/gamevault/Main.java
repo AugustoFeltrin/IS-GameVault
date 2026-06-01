@@ -4,6 +4,7 @@ import br.edu.gamevault.util.IGDBAuthService;
 import br.edu.gamevault.client.IGDBClient;
 import br.edu.gamevault.model.Game;
 import io.github.cdimascio.dotenv.Dotenv;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
