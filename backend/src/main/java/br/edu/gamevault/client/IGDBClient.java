@@ -1,12 +1,12 @@
 package br.edu.gamevault.client;
 
 import br.edu.gamevault.model.Game;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IGDBClient {
@@ -22,8 +22,7 @@ public class IGDBClient {
     public List<Game> searchGame(String gameName) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         
-        // Define os campos que queremos buscar
-        String query = "search \"" + gameName + "\"; fields name, cover.url;";
+        String query = "search \"" + gameName + "\"; fields name, summary, cover.url;";
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
@@ -39,7 +38,25 @@ public class IGDBClient {
             throw new RuntimeException("Erro na busca: " + response.statusCode() + " - " + response.body());
         }
 
-        Gson gson = new Gson();
-        return gson.fromJson(response.body(), new TypeToken<List<Game>>(){}.getType());
+        JsonArray jsonArray = JsonParser.parseString(response.body()).getAsJsonArray();
+        List<Game> games = new ArrayList<>();
+
+        for (JsonElement element : jsonArray) {
+            JsonObject obj = element.getAsJsonObject();
+            
+            // Extraindo valores conforme a ordem do seu record: 
+            // (int id, String title, String description, String coverUrl, String igdbId)
+            int id = obj.has("id") ? obj.get("id").getAsInt() : 0;
+            String title = obj.has("name") ? obj.get("name").getAsString() : "Sem nome";
+            String summary = obj.has("summary") ? obj.get("summary").getAsString() : "Sem sinopse";
+            String coverUrl = (obj.has("cover") && obj.get("cover").getAsJsonObject().has("url")) 
+                              ? "https:" + obj.get("cover").getAsJsonObject().get("url").getAsString() 
+                              : null;
+            String igdbId = String.valueOf(id);
+
+            games.add(new Game(id, title, summary, coverUrl, igdbId));
+        }
+        
+        return games;
     }
 }
