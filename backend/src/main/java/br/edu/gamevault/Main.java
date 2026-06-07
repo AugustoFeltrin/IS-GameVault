@@ -9,7 +9,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         try {
-            Dotenv dotenv = Dotenv.configure().directory("./backend").load();
+            Dotenv dotenv = Dotenv.configure().load();
             String clientId = dotenv.get("IGDB_CLIENT_ID");
 
             IGDBAuthService auth = new IGDBAuthService();
@@ -21,10 +21,15 @@ public class Main {
             List<Game> jogos = client.searchGame("Hollow Knight");
 
             System.out.println("----------------------------------------");
-            for (Game g : jogos) {
-                System.out.println("Encontrado: " + g.title());
+            if (jogos.isEmpty()) {
+                System.out.println("Nenhum jogo encontrado.");
+            } else {
+                for (Game g : jogos) {
+                    System.out.println("Encontrado: " + g.title());
+                    System.out.println("Poster:    " + g.coverUrl());
+                    System.out.println("----------------------------------------");
+                }
             }
-            System.out.println("----------------------------------------");
 
         } catch (Exception e) {
             System.err.println("Erro na execução: " + e.getMessage());

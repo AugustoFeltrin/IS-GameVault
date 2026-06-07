@@ -5,4 +5,5 @@ import java.util.Optional;
 public interface UserService {
     User addUser(User user);
     Optional<User> getUserById(int id);
+    Optional<User> authenticate(String email, String password);
 }
