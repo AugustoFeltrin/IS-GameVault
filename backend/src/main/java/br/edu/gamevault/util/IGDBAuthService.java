@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 public class IGDBAuthService {
     private static final String AUTH_URL = "https://id.twitch.tv/oauth2/token";
     
-    Dotenv dotenv = Dotenv.configure().load();
+    private final Dotenv dotenv = Dotenv.configure().directory("./backend").load();
     private final String clientId = dotenv.get("IGDB_CLIENT_ID");
     private final String clientSecret = dotenv.get("IGDB_CLIENT_SECRET");
 
