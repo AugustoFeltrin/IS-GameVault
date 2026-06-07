@@ -216,29 +216,4 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
         
         return new Review(id, userId, gameId, rating, comment, reviewDate);
     }
-    
-    @Override   
-    public Optional<User> findByEmail(String email) {
-        String sql = "SELECT id, name, email, password FROM users WHERE email = ?";
-        
-        try (Connection conn = DatabaseConnectionPostgreSQL.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setString(1, email);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(new User(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("password")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar usuário por e-mail no banco de dados", e);
-        }
-        return Optional.empty();
-    }
 }
