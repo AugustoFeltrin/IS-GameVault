@@ -7,7 +7,7 @@ public interface GameVaultRepository {
     // User
     User addUser(User user);
     Optional<User> searchUserByID(int userID);
-    Optional<User> findByEmail(String email);
+
     // Game
     Game addGame(Game game);
     Optional<Game> searchGameByID(int gameID);
