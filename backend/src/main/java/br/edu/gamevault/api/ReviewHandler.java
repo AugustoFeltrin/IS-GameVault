@@ -1,16 +1,16 @@
 package br.edu.gamevault.api;
 
-import br.edu.gamevault.model.Review;
-import br.edu.gamevault.service.ReviewService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
+import br.edu.gamevault.model.Review;
+import br.edu.gamevault.service.ReviewService;
 
 public class ReviewHandler implements HttpHandler {
 
@@ -63,14 +63,12 @@ public class ReviewHandler implements HttpHandler {
     }
 
     private void handleRegisterReview(HttpExchange exchange) throws IOException {
-
         InputStream is = exchange.getRequestBody();
-
         Review incomingReview = mapper.readValue(is, Review.class);
 
-        Review createdReview = reviewService.addReview(incomingReview);
+        reviewService.addReview(incomingReview);
 
-        String jsonResponse = mapper.writeValueAsString(createdReview);
+        String jsonResponse = "{\"sucesso\": true, \"mensagem\": \"Avaliação salva com sucesso\"}";
 
         sendResponse(exchange, 201, jsonResponse);
     }
