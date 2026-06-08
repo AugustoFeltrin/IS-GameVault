@@ -17,7 +17,8 @@ export default function Login() {
             const userData = await api.login(email, password);
             
             localStorage.setItem("gamevault_user_id", userData.id);
-            localStorage.setItem("gamevault_user_name", userData.name); 
+            localStorage.setItem("gamevault_user_name", userData.name);
+            localStorage.setItem("gamevault_user_email", userData.email); 
             
             navigate("/home");
         } catch (err: any) {

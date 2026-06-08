@@ -34,6 +34,14 @@ export const api = {
     }
 
     return response.json();
-  }
+  },
   
+  getGames: async () => {
+    const response = await fetch(`${BASE_URL}/games/all`);
+    if (!response.ok) {
+      throw new Error('Erro ao buscar o catálogo de jogos.');
+    }
+    return response.json();
+  },
+
 };
