@@ -1,14 +1,17 @@
 package br.edu.gamevault.api;
 
-import br.edu.gamevault.model.User;
-import br.edu.gamevault.service.UserService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Optional;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import br.edu.gamevault.model.User;
+import br.edu.gamevault.service.UserService;
 
 public class UserHandler implements HttpHandler {
 
@@ -61,7 +64,31 @@ public class UserHandler implements HttpHandler {
     }
 
     private void handleLogin(HttpExchange exchange) throws IOException {
+        try {
+            InputStream is = exchange.getRequestBody();
+            JsonNode jsonNode = mapper.readTree(is);
 
+            if (!jsonNode.has("email") || !jsonNode.has("password")) {
+                sendResponse(exchange, 400, "{\"erro\": \"Campos 'email' e 'password' são obrigatórios.\"}");
+                return;
+            }
+
+            String email = jsonNode.get("email").asText().trim();
+            String password = jsonNode.get("password").asText();
+
+            Optional<User> authenticatedUser = userService.authenticate(email, password);
+
+            if (authenticatedUser.isPresent()) {
+                String jsonResponse = mapper.writeValueAsString(authenticatedUser.get());
+                sendResponse(exchange, 200, jsonResponse);
+            } else {
+                sendResponse(exchange, 401, "{\"erro\": \"E-mail ou senha incorretos.\"}");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendResponse(exchange, 400, "{\"erro\": \"JSON inválido ou mal formatado.\"}");
+        }
     }
 
     private void sendResponse(HttpExchange exchange, int statusCode, String jsonResponse) throws IOException {
