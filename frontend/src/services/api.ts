@@ -44,4 +44,25 @@ export const api = {
     return response.json();
   },
 
+  saveReview: async (userId: number, gameId: number, rating: number, comment: string) => {
+    const response = await fetch(`${BASE_URL}/reviews/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, gameId, rating, comment }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Erro ao salvar sua avaliação.');
+    }
+
+    const text = await response.text();
+    return text ? JSON.parse(text) : { sucesso: true}
+  },
+
+  getReviewsByUser: async (userId: number) => {
+    const response = await fetch(`${BASE_URL}/reviews/user/${userId}`);
+    if (!response.ok) throw new Error('Erro ao buscar suas avaliações.');
+    return response.json();
+  },
+
 };

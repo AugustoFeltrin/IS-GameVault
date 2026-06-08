@@ -8,13 +8,15 @@ export interface Game {
 
 interface GameCardProps {
     game: Game;
+    onClick: () => void;
 }
 
-export default function GameCard({ game }: GameCardProps) {
+export default function GameCard({ game, onClick }: GameCardProps) {
     return (
         <div className="flex flex-col gap-1">
             <div className="w-full rounded-2xl flex items-center justify-center hover:shadow-2xl hover:shadow-primary/80 hover:-translate-y-2 transition-transform">
-                <img 
+                <img
+                    onClick={onClick} 
                     src={game.coverUrl} 
                     alt={`Capa do jogo ${game.title}`} 
                     className="rounded-2xl h-102" 
