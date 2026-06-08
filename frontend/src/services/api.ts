@@ -59,4 +59,10 @@ export const api = {
     return text ? JSON.parse(text) : { sucesso: true}
   },
 
+  getReviewsByUser: async (userId: number) => {
+    const response = await fetch(`${BASE_URL}/reviews/user/${userId}`);
+    if (!response.ok) throw new Error('Erro ao buscar suas avaliações.');
+    return response.json();
+  },
+
 };
