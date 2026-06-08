@@ -1,17 +1,19 @@
 package br.edu.gamevault.util;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class IGDBAuthService {
     private static final String AUTH_URL = "https://id.twitch.tv/oauth2/token";
     
-    private final Dotenv dotenv = Dotenv.configure().directory("./backend").load();
+    private final Dotenv dotenv = Dotenv.configure().directory("./").load();
     private final String clientId = dotenv.get("IGDB_CLIENT_ID");
     private final String clientSecret = dotenv.get("IGDB_CLIENT_SECRET");
 

@@ -210,7 +210,7 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
         int userId = rs.getInt("user_id");
         int gameId = rs.getInt("game_id");
         
-        double rating = rs.getObject("rating", Integer.class); 
+        Integer rating = rs.getObject("rating", Integer.class); 
         String comment = rs.getString("comment");
         LocalDate reviewDate = rs.getDate("review_date").toLocalDate();
         
