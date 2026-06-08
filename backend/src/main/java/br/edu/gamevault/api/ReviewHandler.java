@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -19,6 +20,7 @@ public class ReviewHandler implements HttpHandler {
 
     public ReviewHandler(ReviewService reviewService) {
         this.reviewService = reviewService;
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @Override
@@ -40,17 +42,16 @@ public class ReviewHandler implements HttpHandler {
             String path = exchange.getRequestURI().getPath();
 
             if (method.equalsIgnoreCase("POST") && path.endsWith("/register")) {
-
                 handleRegisterReview(exchange);
-
-            } else if (method.equalsIgnoreCase("GET") && path.contains("/game/")) {
-
+            } 
+            else if (method.equalsIgnoreCase("GET") && path.contains("/game/")) {
                 handleReviewsByGame(exchange);
-
-            } else {
-
-                sendResponse(exchange, 404,
-                        "{\"erro\": \"Rota não encontrada\"}");
+            } 
+            else if (method.equalsIgnoreCase("GET") && path.contains("/user/")) {
+                handleReviewsByUser(exchange);
+            }
+            else {
+                sendResponse(exchange, 404,"{\"erro\": \"Rota não encontrada\"}");
             }
 
         } catch (Exception e) {
@@ -74,20 +75,24 @@ public class ReviewHandler implements HttpHandler {
     }
 
     private void handleReviewsByGame(HttpExchange exchange) throws IOException {
-
         String path = exchange.getRequestURI().getPath();
-
         String[] parts = path.split("/");
-
         int gameId = Integer.parseInt(parts[parts.length - 1]);
 
-        List<Review> reviews =
-                reviewService.getReviewsByGameId(gameId);
-
+        List<Review> reviews = reviewService.getReviewsByGameId(gameId);
         String jsonResponse = mapper.writeValueAsString(reviews);
-
         sendResponse(exchange, 200, jsonResponse);
     }
+
+    private void handleReviewsByUser(HttpExchange exchange) throws IOException {
+        String path = exchange.getRequestURI().getPath();
+        String[] parts = path.split("/");
+        int userId = Integer.parseInt(parts[parts.length - 1]);
+
+        List<Review> reviews = reviewService.getReviewsByUserId(userId);
+        String jsonResponse = mapper.writeValueAsString(reviews);
+        sendResponse(exchange, 200, jsonResponse);
+}
 
     private void sendResponse(HttpExchange exchange,
                               int statusCode,
