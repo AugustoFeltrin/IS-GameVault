@@ -1,6 +1,15 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import toast from "react-hot-toast";
 
 export default function NavBar() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("gamevault_user_id");
+        toast.success("Sessão encerrada. Até logo!");
+        navigate("/login");
+    };
+
     return (
         <header className="h-full w-full bg-background/80 backdrop-blur-md border-b border-surface">
             <div className="max-w-7xl w-full h-full mx-auto px-6 flex justify-between items-center">
@@ -17,13 +26,12 @@ export default function NavBar() {
                 </nav>
 
                 <div className="flex gap-4 items-center">
-                    <div className="flex items-center bg-surface rounded-full h-10 border border-transparent focus-within:border-primary transition-all">
-                        <input 
-                            type="text" 
-                            placeholder="Buscar jogos..." 
-                            className="pl-4 bg-transparent border-none outline-none text-white text-sm placeholder-white/70"
-                        />
-                    </div>
+                    <button 
+                        onClick={handleLogout} 
+                        className="text-sm text-gray-300 hover:text-primary"
+                    >
+                        Sair
+                    </button>
 
                     <div className="bg-surface h-10 w-10 rounded-full"></div>
                 </div>
