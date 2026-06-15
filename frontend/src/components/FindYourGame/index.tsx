@@ -1,19 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Game } from "../GameCard";
+import { api } from "../../services/api";
 
 interface FindYourGameProps {
     searchTerm: string;
     setSearchTerm: (term: string) => void;
-    games: Game[];
     onGameSelect: (game: Game) => void;
 }
 
-export default function FindYourGame({ searchTerm, setSearchTerm, games, onGameSelect }: FindYourGameProps) {
+export default function FindYourGame({ searchTerm, setSearchTerm, onGameSelect }: FindYourGameProps) {
     const [isFocused, setIsFocused] = useState(false);
+    const [igdbResults, setIgdbResults] = useState<Game[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
 
-    const filteredGames = games.filter((game) => 
-        game.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setIgdbResults([]);
+            return;
+        }
+
+        setIsSearching(true);
+
+        const delayDebounceFn = setTimeout(async () => {
+            try {
+                const results = await api.searchIGDB(searchTerm);
+                setIgdbResults(results);
+            } catch (error) {
+                console.error(error);
+                setIgdbResults([]);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
 
     return (
         <div className="w-full h-full flex justify-between">
@@ -21,7 +42,7 @@ export default function FindYourGame({ searchTerm, setSearchTerm, games, onGameS
             <div className="flex flex-col gap-2 mt-auto">
                 <span className="text-sm text-primary">DESCOBRIR</span>
                 <span className="text-3xl font-bold">Encontre seu próximo jogo favorito</span>
-                <span className="text-sm text-gray-400">8 jogos em destaque</span>
+                <span className="text-sm text-gray-400">8 jogos em destaque</span> 
             </div>
 
             <div className="relative w-full max-w-sm mt-auto">
@@ -40,13 +61,15 @@ export default function FindYourGame({ searchTerm, setSearchTerm, games, onGameS
 
                 {isFocused && searchTerm && (
                     <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-surface border border-gray-500/20 rounded-2xl shadow-2xl max-h-80 overflow-y-auto z-50">
-                        {filteredGames.length === 0 ? (
+                        {isSearching ? (
+                            <div className="p-4 text-center text-sm text-primary animate-pulse">Pesquisando...</div>
+                        ) : igdbResults.length === 0 ? (
                             <div className="p-4 text-center text-sm text-gray-400">Nenhum jogo encontrado.</div>
                         ) : (
                             <div className="flex flex-col p-2">
-                                {filteredGames.slice(0, 5).map((game) => (
+                                {igdbResults.slice(0, 5).map((game, index) => (
                                     <div 
-                                        key={game.id} 
+                                        key={game.igdbId || index} 
                                         className="flex items-center gap-3 p-2 hover:bg-background/50 rounded-xl cursor-pointer transition-colors"
                                         onClick={() => onGameSelect(game)}
                                     >
