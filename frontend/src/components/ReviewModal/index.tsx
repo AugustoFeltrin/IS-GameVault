@@ -66,6 +66,7 @@ export default function ReviewModal({ game, onClose }: ReviewModalProps) {
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button 
                                 key={star}
+                                data-cy={`star-${star}`}
                                 onClick={() => setRating(star)}
                                 className={`text-3xl transition-transform hover:scale-110 ${star <= rating ? 'text-primary' : 'text-gray-600'}`}
                             >
