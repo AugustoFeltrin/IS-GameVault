@@ -27,7 +27,11 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             <div className="flex gap-4">
                 <span className="text-sm text-emerald-400">Jogado!</span>
              <div className="flex flex-col gap-4">
-            <div className="text-sm font-bold text-primary">
+            <div 
+                className="text-sm font-bold text-primary"
+                data-cy="review-rating"
+                data-rating={review.rating}
+            >
                 {"⭐".repeat(review.rating)}
             </div>
             </div>
