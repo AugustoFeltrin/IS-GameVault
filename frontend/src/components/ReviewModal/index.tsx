@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import type { Game } from "../GameCard";
 import { api } from "../../services/api";
 
@@ -9,28 +10,32 @@ interface ReviewModalProps {
 
 export default function ReviewModal({ game, onClose }: ReviewModalProps) {
     const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState("");
-    const [error, setError] = useState("");
+    const [comment, setComment] = useState("");;
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSave = async () => {
         if (rating === 0) {
-            setError("Por favor, dê pelo menos uma estrela.");
+            toast.error("Por favor, selecione pelo menos 1 estrela.");
             return;
         }
 
         setIsSubmitting(true);
-        setError("");
 
         try {
             const userId = Number(localStorage.getItem("gamevault_user_id"));
+            let finalGameId = game.id;
+
+            if (finalGameId === 0) {
+                const savedLocalGame = await api.saveGameLocal(game);
+                finalGameId = savedLocalGame.id; 
+            }
+
+            await api.saveReview(userId, finalGameId, rating, comment);
             
-            await api.saveReview(userId, game.id, rating, comment);
-            
-            alert("Avaliação salva com sucesso no seu Diário!");
+            toast.success("Avaliação salva com sucesso no seu Diário!");
             onClose(); 
         } catch (err: any) {
-            setError(err.message);
+            toast.error(err.message || "Erro ao salvar avaliação.");
             setIsSubmitting(false);
         }
     };
@@ -56,8 +61,6 @@ export default function ReviewModal({ game, onClose }: ReviewModalProps) {
                         <h2 className="text-3xl font-bold text-white mb-1">{game.title}</h2>
                         <p className="text-sm text-gray-400">Como foi a sua experiência?</p>
                     </div>
-
-                    {error && <div className="text-red-500 text-sm bg-red-500/10 p-2 rounded">{error}</div>}
 
                     <div className="flex gap-2 my-2">
                         {[1, 2, 3, 4, 5].map((star) => (

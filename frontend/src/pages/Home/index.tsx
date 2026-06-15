@@ -38,7 +38,6 @@ export default function Home() {
                     <FindYourGame 
                         searchTerm={searchTerm} 
                         setSearchTerm={setSearchTerm} 
-                        games={games}
                         onGameSelect={setSelectedGame} 
                     />
                 </div>

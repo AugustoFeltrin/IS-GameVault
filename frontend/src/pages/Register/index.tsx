@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { api } from "../../services/api";
 
@@ -16,7 +17,7 @@ export default function Register() {
 
         try {
             await api.register(name, email, password);
-            alert("Conta criada com sucesso! Faça login para entrar.");
+            toast.success("Conta criada com sucesso! Faça login para entrar.");
             navigate("/login");
         } catch (err: any) {
             setError(err.message);

@@ -65,4 +65,28 @@ export const api = {
     return response.json();
   },
 
+  searchIGDB: async (query: string) => {
+    const response = await fetch(`${BASE_URL}/igdb/search?q=${encodeURIComponent(query)}`);
+    if (!response.ok) {
+      throw new Error('Erro ao buscar jogos na base global.');
+    }
+    return response.json();
+  },
+
+  saveGameLocal: async (game: any) => {
+    const response = await fetch(`${BASE_URL}/games/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        title: game.title, 
+        description: game.description || "Sem descrição", 
+        coverUrl: game.coverUrl, 
+        igdbId: game.igdbId 
+      }),
+    });
+    
+    if (!response.ok) throw new Error('Erro ao registrar jogo no banco local.');
+    return response.json(); 
+  },
+
 };
