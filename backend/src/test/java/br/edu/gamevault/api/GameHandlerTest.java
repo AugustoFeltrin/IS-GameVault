@@ -1,8 +1,12 @@
 package br.edu.gamevault.api;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
+
+import com.sun.net.httpserver.HttpHandler;
 
 import br.edu.gamevault.service.GameService;
 
@@ -11,7 +15,7 @@ public class GameHandlerTest {
     @Test
     public void deveCriarGameHandler() {
 
-        GameService service = null;
+        GameService service = mock(GameService.class);
 
         GameHandler handler = new GameHandler(service);
 
@@ -21,10 +25,10 @@ public class GameHandlerTest {
     @Test
     public void deveImplementarHttpHandler() {
 
-        GameService service = null;
+        GameService service = mock(GameService.class);
 
         GameHandler handler = new GameHandler(service);
 
-        assertNotNull(handler);
+        assertTrue(handler instanceof HttpHandler);
     }
 }
