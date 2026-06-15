@@ -69,7 +69,7 @@ export default function FindYourGame({ searchTerm, setSearchTerm, onGameSelect }
                             <div className="flex flex-col p-2">
                                 {igdbResults.slice(0, 5).map((game, index) => (
                                     <div 
-                                        key={game.igdbId || index} // Chave alterada para suportar o ID da IGDB
+                                        key={game.igdbId || index} 
                                         className="flex items-center gap-3 p-2 hover:bg-background/50 rounded-xl cursor-pointer transition-colors"
                                         onClick={() => onGameSelect(game)}
                                     >
