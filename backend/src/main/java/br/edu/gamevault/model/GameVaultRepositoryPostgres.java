@@ -64,9 +64,29 @@ public class GameVaultRepositoryPostgres implements GameVaultRepository {
     // Game
     @Override
     public Game addGame(Game game) {
-        String sql = "INSERT INTO games (title, description, cover_url, igdb_id) VALUES (?, ?, ?, ?)";
+        String searchSql = "SELECT id, title, description, cover_url, igdb_id FROM games WHERE igdb_id = ?";
         try (Connection conn = DatabaseConnectionPostgreSQL.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement searchStmt = conn.prepareStatement(searchSql)) {
+            
+            searchStmt.setString(1, game.igdbId());
+            try (ResultSet rs = searchStmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Game(
+                        rs.getInt("id"), 
+                        rs.getString("title"), 
+                        rs.getString("description"), 
+                        rs.getString("cover_url"), 
+                        rs.getString("igdb_id")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao verificar a existência do jogo", e);
+        }
+
+        String insertSql = "INSERT INTO games (title, description, cover_url, igdb_id) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnectionPostgreSQL.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
             
             pstmt.setString(1, game.title());
             pstmt.setString(2, game.description());
