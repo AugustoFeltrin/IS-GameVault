@@ -1,3 +1,5 @@
+import { FaStar } from "react-icons/fa";
+
 export interface Game {
     id: number;
     title: string;
@@ -19,13 +21,18 @@ export default function GameCard({ game, onClick }: GameCardProps) {
                     onClick={onClick} 
                     src={game.coverUrl} 
                     alt={`Capa do jogo ${game.title}`} 
-                    className="rounded-2xl h-102" 
+                    className="rounded-2xl h-102 cursor-pointer" 
                 />
             </div>
 
             <div className="p-1 flex flex-col gap-1">
                 <h3 className="text-white font-bold text-sm">{game.title}</h3>
-                <div className="text-sm">⭐⭐⭐⭐⭐</div>
+                
+                <div className="flex gap-1">
+                    {[...Array(5)].map((_, index) => (
+                        <FaStar key={index} className="text-sm text-secondary" />
+                    ))}
+                </div>
             </div>
         </div>
     )

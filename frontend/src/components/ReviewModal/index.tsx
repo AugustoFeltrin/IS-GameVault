@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import type { Game } from "../GameCard";
 import { api } from "../../services/api";
+import { FaStar } from "react-icons/fa";
 
 interface ReviewModalProps {
     game: Game;
@@ -62,18 +63,18 @@ export default function ReviewModal({ game, onClose }: ReviewModalProps) {
                         <p className="text-sm text-gray-400">Como foi a sua experiência?</p>
                     </div>
 
-                    <div className="flex gap-2 my-2">
+                <div className="flex gap-2 my-2">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button 
                                 key={star}
-                                data-cy={`star-${star}`}
+                                data-cy={`star-${star}`} 
                                 onClick={() => setRating(star)}
-                                className={`text-3xl transition-transform hover:scale-110 ${star <= rating ? 'text-primary' : 'text-gray-600'}`}
+                                className={`text-3xl transition-transform hover:scale-110 ${star <= rating ? 'text-secondary' : 'text-gray-600'}`}
                             >
-                                ★
+                                <FaStar />
                             </button>
                         ))}
-                    </div>
+                </div>
 
                     <textarea 
                         placeholder="Escreva sua análise (opcional)..."
