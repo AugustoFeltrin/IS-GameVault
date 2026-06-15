@@ -28,6 +28,15 @@ export default function Login() {
 
     return (
         <div className="flex flex-col min-h-screen">
+            <header className="top-10 left-10 absolute">
+                <div className="flex items-center gap-1">
+                    <img 
+                        className="h-12 w-12" 
+                        src="src\assets\Logo.png"></img>
+                    <span><b className="text-primary text-lg">Game</b><b className="text-secondary text-lg">Vault</b></span>
+                </div>
+            </header> 
+
             <main className="flex justify-center items-center my-auto gap-20 p-10">
                 <div className="flex flex-col w-1/4 gap-2">
                     <p className="text-5xl font-bold">Seu diário <b className="text-primary">gamer</b> em um só lugar.</p>
@@ -71,6 +80,10 @@ export default function Login() {
                     <span className="text-center text-gray-400">Não tem uma conta?<Link to="/register" className="text-primary font-bold hover:underline"> Crie uma</Link></span>
                 </form>
             </main>
+
+            <footer className="bottom-10 left-10 absolute">
+                <span className="text-gray-500 text-sm">GameVault - Projeto Unisinos S2</span>
+            </footer> 
         </div>
     );
 }
