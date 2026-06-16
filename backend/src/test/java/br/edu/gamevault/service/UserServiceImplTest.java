@@ -1,56 +1,77 @@
 package br.edu.gamevault.service;
 
-import br.edu.gamevault.model.GameVaultRepository;
-import br.edu.gamevault.model.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import br.edu.gamevault.model.GameVaultRepository;
+import br.edu.gamevault.model.User;
 
 public class UserServiceImplTest {
 
     private GameVaultRepository repository;
     private UserServiceImpl service;
 
-    private static final User USER_SEM_ID  = new User(0,  "Augusto", "augusto@email.com", "senha123");
-    private static final User USER_COM_ID  = new User(1,  "Augusto", "augusto@email.com", "senha123");
-    private static final User USER_OUTRO   = new User(2,  "João",    "joao@email.com",    "abc456");
+    private User USER_SEM_ID;
+    private User USER_COM_ID;
+    private User USER_OUTRO;
 
     @Before
     public void setUp() {
         repository = Mockito.mock(GameVaultRepository.class);
         service    = new UserServiceImpl(repository);
-    }
 
-    // ── addUser ───────────────────────────────────────────────────────────────
+        String hashSenha123 = BCrypt.withDefaults().hashToString(10, "senha123".toCharArray());
+        String hashAbc456   = BCrypt.withDefaults().hashToString(10, "abc456".toCharArray());
+
+        USER_SEM_ID = new User(0, "Augusto", "augusto@email.com", "senha123");
+        USER_COM_ID = new User(1, "Augusto", "augusto@email.com", hashSenha123);
+        USER_OUTRO  = new User(2, "João",    "joao@email.com",    hashAbc456);
+    }
 
     @Test
     public void addUser_deveRetornarUsuarioComIdGerado() {
-        when(repository.addUser(USER_SEM_ID)).thenReturn(USER_COM_ID);
+        when(repository.addUser(any(User.class))).thenReturn(USER_COM_ID);
 
         User resultado = service.addUser(USER_SEM_ID);
 
         assertEquals(1, resultado.id());
         assertEquals("Augusto", resultado.name());
-        verify(repository, times(1)).addUser(USER_SEM_ID);
+        verify(repository, times(1)).addUser(any(User.class));
     }
 
     @Test
-    public void addUser_deveDelegarAoRepositorio() {
+    public void addUser_deveDelegarAoRepositorioComSenhaCriptografada() {
         when(repository.addUser(any(User.class))).thenReturn(USER_COM_ID);
 
         service.addUser(USER_SEM_ID);
 
-        verify(repository).addUser(USER_SEM_ID);
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(repository).addUser(userCaptor.capture());
+
+        User capturedUser = userCaptor.getValue();
+        assertEquals("Augusto", capturedUser.name());
+        assertEquals("augusto@email.com", capturedUser.email());
+        assertNotEquals("senha123", capturedUser.password());
+        assertTrue(BCrypt.verifyer().verify("senha123".toCharArray(), capturedUser.password().toCharArray()).verified);
     }
 
     @Test
     public void addUser_quandoRepositorioLancaExcecao_devePropagar() {
-        when(repository.addUser(any())).thenThrow(new RuntimeException("Email duplicado"));
+        when(repository.addUser(any(User.class))).thenThrow(new RuntimeException("Email duplicado"));
 
         try {
             service.addUser(USER_SEM_ID);
@@ -59,8 +80,6 @@ public class UserServiceImplTest {
             assertEquals("Email duplicado", e.getMessage());
         }
     }
-
-    // ── getUserById ───────────────────────────────────────────────────────────
 
     @Test
     public void getUserById_quandoUsuarioExiste_deveRetornarOptionalPreenchido() {
@@ -89,8 +108,6 @@ public class UserServiceImplTest {
 
         verify(repository).searchUserByID(42);
     }
-
-    // ── authenticate ──────────────────────────────────────────────────────────
 
     @Test
     public void authenticate_quandoCredenciaisCorretas_deveRetornarUsuario() {
@@ -140,7 +157,6 @@ public class UserServiceImplTest {
 
     @Test
     public void authenticate_quandoEmailEhNull_naoDeveLancarExcecaoNoServico() {
-        // O repositório lida com null; o serviço só repassa
         when(repository.findByEmail(null)).thenReturn(Optional.empty());
 
         Optional<User> resultado = service.authenticate(null, "senha123");

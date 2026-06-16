@@ -29,7 +29,6 @@ public class App {
         GameService gameService = new GameServiceImpl(repository);
         ReviewService reviewService = new ReviewServiceImpl(repository);
 
-        System.out.println("Autenticando na IGDB...");
         Dotenv dotenv = Dotenv.configure().load();
         String clientId = dotenv.get("IGDB_CLIENT_ID");
 
