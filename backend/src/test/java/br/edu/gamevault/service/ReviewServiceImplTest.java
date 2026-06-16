@@ -1,18 +1,24 @@
 package br.edu.gamevault.service;
 
-import br.edu.gamevault.model.GameVaultRepository;
-import br.edu.gamevault.model.Review;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import br.edu.gamevault.model.GameVaultRepository;
+import br.edu.gamevault.model.Review;
 
 public class ReviewServiceImplTest {
 
@@ -21,15 +27,12 @@ public class ReviewServiceImplTest {
 
     private static final LocalDate DATA_FIXA = LocalDate.of(2025, 6, 1);
 
-    // Review com nota válida e data informada
     private static final Review REVIEW_COMPLETA =
             new Review(0, 1, 10, 8, "Jogo incrível!", DATA_FIXA);
 
-    // Review sem nota e sem comentário (apenas "marcado como jogado")
     private static final Review REVIEW_SEM_NOTA =
             new Review(0, 1, 10, null, null, DATA_FIXA);
 
-    // Review sem data (deve assumir hoje)
     private static final Review REVIEW_SEM_DATA =
             new Review(0, 1, 10, 7, "Bom jogo", null);
 
@@ -38,8 +41,6 @@ public class ReviewServiceImplTest {
         repository = Mockito.mock(GameVaultRepository.class);
         service    = new ReviewServiceImpl(repository);
     }
-
-    // ── addReview ─────────────────────────────────────────────────────────────
 
     @Test
     public void addReview_quandoValidaComNota_deveSalvarNoBanco() {
@@ -81,7 +82,6 @@ public class ReviewServiceImplTest {
         Review salva = new Review(1, 1, 10, 0, "Péssimo", DATA_FIXA);
         when(repository.addReview(any())).thenReturn(salva);
 
-        // nota 0 é válida — não deve lançar exceção
         Review resultado = service.addReview(new Review(0, 1, 10, 0, "Péssimo", DATA_FIXA));
 
         assertEquals(Integer.valueOf(0), resultado.rating());
@@ -105,7 +105,6 @@ public class ReviewServiceImplTest {
         service.addReview(REVIEW_SEM_DATA);
         verify(repository).addReview(captor.capture());
 
-        // A data salva deve ser hoje (ou pelo menos não-nula)
         assertNotNull(captor.getValue().reviewDate());
         assertEquals(LocalDate.now(), captor.getValue().reviewDate());
     }
@@ -120,8 +119,6 @@ public class ReviewServiceImplTest {
 
         assertEquals(DATA_FIXA, captor.getValue().reviewDate());
     }
-
-    // ── getReviewsByUserId ────────────────────────────────────────────────────
 
     @Test
     public void getReviewsByUserId_deveRetornarReviewsDoUsuario() {
@@ -154,7 +151,6 @@ public class ReviewServiceImplTest {
         verify(repository).searchReviewByUser(7);
     }
 
-    // ── getReviewsByGameId ────────────────────────────────────────────────────
 
     @Test
     public void getReviewsByGameId_deveRetornarReviewsDoJogo() {
